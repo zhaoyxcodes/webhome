@@ -24,18 +24,26 @@ import com.system.core.util.HmacUtil;
 public class Goods {
 
 	private String id;
-	private String title;
-	private String type;
-	private String price;
-	private String saleprice;
-	private String number;
-	private String paytype;
-	private String distributiontype;
-	private String describe;
-	private String imgs;
-	private String geom;
-	private String time;
+	private String title;//标题
+	private String type;//类型
+	private String price;//原价
+	private String saleprice;//折扣价
+	private String number;//库存
+	private String paytype;//支付方式
+	private String distributiontype;//配送方式
+	private String describe;//商品详情
+	private String imgs;//图片详情
+	private String geom;//位置
+	private String time;//折扣天数
+	private String imgs2;//图片展示
 	
+	
+	public String getImgs2() {
+		return imgs2;
+	}
+	public void setImgs2(String imgs2) {
+		this.imgs2 = imgs2;
+	}
 	public String getId() {
 		return id;
 	}

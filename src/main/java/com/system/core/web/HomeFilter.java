@@ -18,8 +18,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.system.core.util.HmacUtil;
 import com.system.core.util.ResponseValue;
 
 
@@ -41,15 +41,14 @@ public class HomeFilter implements Filter{
 		// TODO Auto-generated method stub
 		
 	}
+	
 	//校验是否登录
 	@Override
 	public void doFilter(ServletRequest arg0, ServletResponse arg1,
 			FilterChain arg2) throws IOException, ServletException {
-		
-		String userjson=arg0.getParameter("user");
-		if(userjson!=null&&userjson.length()>0){
-			JSONObject jobj=JSON.parseObject(userjson);
-			if(jobj!=null&&jobj.getString(ResponseValue.USER_SESSION_KEY).length()>0){
+		JSONObject userjson=JSONObject.parseObject(arg0.getParameter("user"));
+		if(userjson!=null){
+			if(userjson.getString(ResponseValue.USER_SESSION_KEY).length()>0){
 				arg2.doFilter(arg0, arg1);
 				return;
 			}

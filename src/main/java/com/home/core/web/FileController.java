@@ -64,34 +64,4 @@ public class FileController {
 		}
 		return ResponseValue.IS_ERROR;
 	}
-	@RequestMapping(value = "/upload2", method=RequestMethod.GET)
-	@ResponseBody
-	public String upload2(MultipartHttpServletRequest request)
-			throws Exception {
-		Iterator<String> itr = request.getFileNames();
-		MultipartFile file = request.getFile(itr.next());
-		String dir=request.getParameter("dir");
-		if(dir!=null&&dir.length()>0){
-			try{
-				String dirfile=dir+"/"+HmacUtil.getUUID()+".jpg";
-				File targetFile = new File(fileService+dirfile);
-				if (!targetFile.exists()) {
-					boolean succ = targetFile.mkdirs();
-				}
-				file.transferTo(targetFile);
-				return dirfile;
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-		}
-		return ResponseValue.IS_ERROR;
-	}
-	
-	@RequestMapping(value = "/upload3", method=RequestMethod.GET)
-	@ResponseBody
-	public String upload2(HttpServletRequest request)
-			throws Exception {
-		
-		return ResponseValue.IS_ERROR;
-	}
 }

@@ -18,12 +18,21 @@ package com.system.core.util;
  * @since    JDK 1.7
  * @see 	 
  */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+
+import javax.servlet.ServletRequest;
+
+import com.alibaba.fastjson.JSONObject;
  
 public class HmacUtil {
  
+	
     public static String SHA1(String str){  
         try {  
             //指定sha1算法  
@@ -59,5 +68,14 @@ public class HmacUtil {
     public static String getUUID(){
     	return UUID.randomUUID().toString().replace("-", "");
     }
+    public static boolean getStringNull(Object obj){
+    	if(obj==null||obj.toString().length()<=0||obj.toString().isEmpty()){
+    		return true;
+    	}
+    	return false;
+    }
+    public static void main(String[] args) {
+		System.out.println("".isEmpty());
+	}
 }
 

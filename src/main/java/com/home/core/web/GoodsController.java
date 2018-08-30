@@ -9,13 +9,20 @@
 
 package com.home.core.web;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.home.core.entity.Goods;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.home.core.service.GoodsService;
+import com.system.core.util.HmacUtil;
 import com.system.core.util.ResponseValue;
 
 /**
@@ -34,15 +41,20 @@ public class GoodsController {
 	@Autowired
 	private GoodsService goodsService;
 	
-	@RequestMapping("/saveGoods")
+	@RequestMapping(value = "/saveGoods", method=RequestMethod.POST)
 	@ResponseBody
-	public String saveGoods(Goods goods) {
-		if(goods!=null){
-			 int num=goodsService.saveGoods(goods);
-			 if(num>0){
-				 return  ResponseValue.IS_SUCCESS;
-			 }
+	public String saveGoods(String title,String describe,String price,String paytype,String distype,
+			String time,String submitSKU,String img0,String img1) throws IOException {
+		JSONArray sku_attr_list=JSONArray.parseArray(submitSKU);
+		if(sku_attr_list.size()<=0||HmacUtil.getStringNull(submitSKU)||HmacUtil.getStringNull(title)||HmacUtil.getStringNull(describe)
+				||HmacUtil.getStringNull(paytype)||HmacUtil.getStringNull(distype)||HmacUtil.getStringNull(time)||HmacUtil.getStringNull(img0)
+				||HmacUtil.getStringNull(img1)){
+			System.out.println("add goods attr is null..");
 		}
+		 int num=goodsService.saveGoods( title, describe, price, paytype, distype, time, img0, img1, sku_attr_list);
+		 if(num>0){
+			 return  ResponseValue.IS_SUCCESS;
+		 }
 		return ResponseValue.IS_ERROR;
 	}
 	

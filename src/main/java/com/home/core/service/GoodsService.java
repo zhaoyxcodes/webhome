@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONArray;
 import com.home.core.dao.JdbcDao;
-import com.home.core.entity.Goods;
 import com.system.core.util.HmacUtil;
 
 /**
@@ -34,12 +34,15 @@ public class GoodsService {
 	@Autowired
 	private JdbcDao jdbcDao;
 	
-	public int saveGoods(Goods goods){
-		String isql="insert into goods(id,title,type,price,saleprice,number,paytype,distributiontype,describe,imgs,geom,time)values('"+HmacUtil.getUUID()+"',"+
-				"'"+goods.getTitle()+"','"+goods.getType()+"','"+goods.getPrice()+"','"+goods.getSaleprice()+"','"+
-				goods.getNumber()+"','"+goods.getPaytype()+"','"+goods.getDistributiontype()+"','"+goods.getDescribe()+
-				"','"+goods.getImgs()+"',"+goods.getGeom()+",'"+goods.getTime()+"')";
-		return jdbcDao.update(isql);
+	@Transactional
+	public int saveGoods(String title,String describe,String price,String paytype,String distype,String time,String img0,String img1,JSONArray sku_attr_list){
+//		String isql="insert into goods(id,title,type,price,saleprice,number,paytype,distributiontype,describe,imgs,geom,time)values('"+HmacUtil.getUUID()+"',"+
+//				"'"+title+"','"+goods.getType()+"','"+goods.getPrice()+"','"+goods.getSaleprice()+"','"+
+//				goods.getNumber()+"','"+goods.getPaytype()+"','"+goods.getDistributiontype()+"','"+goods.getDescribe()+
+//				"','"+goods.getImgs()+"',"+goods.getGeom()+",'"+goods.getTime()+"')";
+//		return jdbcDao.update(isql);
+		System.out.println(sku_attr_list.getJSONObject(0).getJSONArray("attrlist").size());
+		return 0;
 	}
 }
 
