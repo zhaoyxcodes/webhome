@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.home.core.service.GoodsService;
+import com.home.core.service.ProductService;
 import com.system.core.util.HmacUtil;
 import com.system.core.util.ResponseValue;
 
@@ -37,21 +37,23 @@ import com.system.core.util.ResponseValue;
  */
 @Controller
 @RequestMapping("/home")
-public class GoodsController {
+public class ProductController {
 	@Autowired
-	private GoodsService goodsService;
+	private ProductService productService;
 	
 	@RequestMapping(value = "/saveGoods", method=RequestMethod.POST)
 	@ResponseBody
-	public String saveGoods(String title,String describe,String price,String paytype,String distype,
-			String time,String submitSKU,String img0,String img1) throws IOException {
+	public String saveProduct(String title,String describe,String price,String paytype,String distype,
+			String time,String submitSKU,String otherattr,String img0,String img1,String geom) throws IOException {
 		JSONArray sku_attr_list=JSONArray.parseArray(submitSKU);
+		JSONArray other_attr_list=JSONArray.parseArray(otherattr);
 		if(sku_attr_list.size()<=0||HmacUtil.getStringNull(submitSKU)||HmacUtil.getStringNull(title)||HmacUtil.getStringNull(describe)
 				||HmacUtil.getStringNull(paytype)||HmacUtil.getStringNull(distype)||HmacUtil.getStringNull(time)||HmacUtil.getStringNull(img0)
 				||HmacUtil.getStringNull(img1)){
 			System.out.println("add goods attr is null..");
 		}
-		 int num=goodsService.saveGoods( title, describe, price, paytype, distype, time, img0, img1, sku_attr_list);
+		String cid="0";
+		 int num=productService.saveProduct(cid, title, describe, price, paytype, distype, time, img0, img1, sku_attr_list, other_attr_list, geom);
 		 if(num>0){
 			 return  ResponseValue.IS_SUCCESS;
 		 }

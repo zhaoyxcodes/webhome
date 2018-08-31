@@ -9,7 +9,6 @@
 
 package com.home.core.entity;
 
-import com.system.core.util.HmacUtil;
 
 /**
  * ClassName:com.home.core.entity.Goods <br/>
@@ -21,29 +20,17 @@ import com.system.core.util.HmacUtil;
  * @since    JDK 1.7
  * @see 	 
  */
-public class Goods {
+public class Product {
 
 	private String id;
 	private String title;//标题
-	private String type;//类型
+	private String category_id;//类型
 	private String price;//原价
 	private String saleprice;//折扣价
-	private String number;//库存
 	private String paytype;//支付方式
 	private String distributiontype;//配送方式
 	private String describe;//商品详情
-	private String imgs;//图片详情
-	private String geom;//位置
 	private String time;//折扣天数
-	private String imgs2;//图片展示
-	
-	
-	public String getImgs2() {
-		return imgs2;
-	}
-	public void setImgs2(String imgs2) {
-		this.imgs2 = imgs2;
-	}
 	public String getId() {
 		return id;
 	}
@@ -56,11 +43,11 @@ public class Goods {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getType() {
-		return type;
+	public String getCategory_id() {
+		return category_id;
 	}
-	public void setType(String type) {
-		this.type = type;
+	public void setCategory_id(String category_id) {
+		this.category_id = category_id;
 	}
 	public String getPrice() {
 		return price;
@@ -73,12 +60,6 @@ public class Goods {
 	}
 	public void setSaleprice(String saleprice) {
 		this.saleprice = saleprice;
-	}
-	public String getNumber() {
-		return number;
-	}
-	public void setNumber(String number) {
-		this.number = number;
 	}
 	public String getPaytype() {
 		return paytype;
@@ -98,28 +79,14 @@ public class Goods {
 	public void setDescribe(String describe) {
 		this.describe = describe;
 	}
-	public String getImgs() {
-		return imgs;
-	}
-	public void setImgs(String imgs) {
-		this.imgs = imgs;
-	}
-	public String getGeom() {
-		return geom;
-	}
-	public void setGeom(String geom) {
-		String geom2="";
-		if(geom!=null&&geom.length()>0){
-			geom2=HmacUtil.stringPoitGEO(geom);
-		}
-		this.geom = geom2;
-	}
 	public String getTime() {
 		return time;
 	}
 	public void setTime(String time) {
 		this.time = time;
 	}
+	
+	
 
 }
 
