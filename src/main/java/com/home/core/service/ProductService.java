@@ -42,37 +42,15 @@ public class ProductService {
 	@Autowired
 	private JdbcDao jdbcDao;
 	
-	//获取分类
-	public String queryCategory(){
-		try{
-			String sql="select * from category order by sorts";
-			List plist = jdbcDao.queryForObjectList(sql,
-					new String[] {}, Category.class);
-			if(plist!=null&&plist.size()>0){
-				String cateli="";
-				for (Object object : plist) {
-					Category cate=(Category)object;
-					cateli="{id:'"+cate.getId()+"',name:'"+cate.getLmname()+"',sort:'"+cate.getSorts()+"',pareid:'"+cate.getPare_id()+"'},";
-				}
-				if(cateli.length()>0){
-					cateli=cateli.substring(0,cateli.length()-1);
-				}
-				return "{data:["+cateli+"]}";
-			}
-			
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-		return ResponseValue.IS_ERROR;
-	}
+	
 	//新增商品
-	public int saveProduct(String cid, String title, String describe,
+	public String saveProduct(String cid, String title, String describe,
 			String price, String paytype, String distype, String time,
 			String img0, String img1, JSONArray sku_attr_list,
-			JSONArray other_attr_list, String geom) {
+			JSONArray other_attr_list, String farm_id) {
 		String[] sql = {};
 		String pro_id = HmacUtil.getUUID();
-		sql[sql.length] = "insert into product(id,title,category_id,price,saleprice,paytype,distributiontype,describe,geom,time)values('"
+		sql[sql.length] = "insert into product(id,title,category_id,price,saleprice,paytype,distributiontype,describe,farm_id,time)values('"
 				+ pro_id
 				+ "',"
 				+ "'"
@@ -87,7 +65,7 @@ public class ProductService {
 				+ distype
 				+ "','"
 				+ describe
-				+ "'," + HmacUtil.stringPoitGEO(geom) + ",'" + time + "')";
+				+ "','" + farm_id+ "','" + time + "')";
 		if (img0.indexOf(",") != -1) {
 			String[] img0li = img0.split(",");
 			for (String string : img0li) {
@@ -161,23 +139,23 @@ public class ProductService {
 
 		try {
 			jdbcDao.batchUpdate(sql);
-			return 1;
+			return  ResponseValue.IS_SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return 0;
+		return  ResponseValue.IS_ERROR;
 	}
 	//修改商品信息
-	public int updateProduct(String pro_id, String cid, String title,
+	public String  updateProduct(String pro_id, String cid, String title,
 			String describe, String price, String paytype, String distype,
 			String time, JSONArray img, JSONArray sku_attr_list,
-			JSONArray other_attr_list, String geom) {
+			JSONArray other_attr_list) {
 		String[] sql = {};
 		sql[sql.length] = "update product set title'" + title
 				+ "',category_id='" + cid + "',price='" + price
 				+ "',saleprice='9-12',paytype='" + paytype
 				+ "',distributiontype='" + distype + "',describe='" + describe
-				+ "',geom=" + HmacUtil.stringPoitGEO(geom) + ",time='" + time
+				+ "',time='" + time
 				+ "' where id='" + pro_id + "'";
 
 		for (int i = 0; i < img.size(); i++) {// [{img:"",id:"",type:"0",delete:"1"},{}]
@@ -253,11 +231,11 @@ public class ProductService {
 
 		try {
 			jdbcDao.batchUpdate(sql);
-			return 1;
+			return ResponseValue.IS_SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return 0;
+		return ResponseValue.IS_ERROR;
 	}
 	//根据商品id查询商品信息
 	public String queryProduct(String pro_id) {
@@ -343,6 +321,64 @@ public class ProductService {
 			return "{" + json.toString() + "}";
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return ResponseValue.IS_ERROR;
+	}
+	//根据商品id查询商品信息
+		public String queryProductByFarm(String farm_id) {
+			try {
+				StringBuffer json = new StringBuffer();
+				String sql = "select * from product where farm_id=?";
+				List plist = jdbcDao.queryForObjectList(sql,
+						new String[] { farm_id }, Product.class);
+				if (plist != null && plist.size() > 0) {
+					Product p = (Product) plist.get(0);
+					json.append("title:'" + p.getTitle() + "',");
+					json.append("describe:'" + p.getDescribe() + "',");
+					json.append("price:'" + p.getPrice() + "',");
+					json.append("paytype:'" + p.getPaytype() + "',");
+					json.append("distype:'" + p.getDistributiontype() + "',");
+					json.append("time:'" + p.getTime() + "',");
+					json.append("status:'" + p.getStatus() + "',");
+					sql = "select * from product_imgs where product_id='" + p.getId()
+							+ "' order by createdate";
+					List<Map<String, Object>> imglist = jdbcDao.queryForList(sql);
+					if (imglist != null && imglist.size() > 0) {
+						String imglistjson = "";// [{img:"",id:"",type:"0",delete:"1"},{}]
+						for (Map<String, Object> map2 : imglist) {
+							String id = map2.get("id".toUpperCase()).toString();
+							String imgurl = map2.get("imgurl".toUpperCase())
+									.toString();
+							String istype = map2.get("istype".toUpperCase())
+									.toString();
+							imglistjson += "{img:'" + imgurl + "',id:'" + id
+									+ "',type:'" + istype + "',delete:''},";
+						}
+						if (imglistjson.length() > 0) {
+							imglistjson = imglistjson.substring(0,
+									imglistjson.length() - 1);
+						}
+						json.append("imglist:[" + imglistjson + "],");
+					}
+
+				}
+				return "{" + json.toString() + "}";
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return ResponseValue.IS_ERROR;
+		}
+	public String  deleteProduct(String pro_id){
+		try{
+			String[] sql = {};
+			sql[sql.length] = "update product set status='0'  where id='"+pro_id+"'";
+			sql[sql.length] = "update product_imgs set status='0'  where product_id='"+pro_id+"'";
+			sql[sql.length] = "update product_pros set status='0'  where product_id='"+pro_id+"'";
+			sql[sql.length] = "update sku set status='0'  where product_id='"+pro_id+"'";
+			jdbcDao.batchUpdate(sql);
+			return ResponseValue.IS_SUCCESS;
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		return ResponseValue.IS_ERROR;
 	}

@@ -83,7 +83,8 @@ public class LoginService {
 					+ "\",\"" + ResponseValue.USER_NAME + "\":\""
 					+ user.getUsername() + "\",\"" + ResponseValue.USER_IMG
 					+ "\":\"" + user.getImg() + "\",\"" + ResponseValue.USER_OPENID
-					+ "\":\"" + openId + "\"}";
+					+ "\":\"" + openId + "\",\"" + ResponseValue.USER_ID
+					+ "\":\"" + user.getId() + "\"}";
 
 		}
 		return ResponseValue.IS_ERROR;

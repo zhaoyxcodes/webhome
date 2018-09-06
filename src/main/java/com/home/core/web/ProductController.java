@@ -41,10 +41,10 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 	
-	@RequestMapping(value = "/saveGoods", method=RequestMethod.POST)
+	@RequestMapping(value = "/saveProduct", method=RequestMethod.POST)
 	@ResponseBody
 	public String saveProduct(String title,String describe,String price,String paytype,String distype,
-			String time,String submitSKU,String otherattr,String img0,String img1,String geom) throws IOException {
+			String time,String submitSKU,String otherattr,String img0,String img1,String farm_id) throws IOException {
 		JSONArray sku_attr_list=JSONArray.parseArray(submitSKU);
 		JSONArray other_attr_list=JSONArray.parseArray(otherattr);
 		if(sku_attr_list.size()<=0||HmacUtil.getStringNull(submitSKU)||HmacUtil.getStringNull(title)||HmacUtil.getStringNull(describe)
@@ -53,11 +53,63 @@ public class ProductController {
 			System.out.println("add goods attr is null..");
 		}
 		String cid="0";
-		 int num=productService.saveProduct(cid, title, describe, price, paytype, distype, time, img0, img1, sku_attr_list, other_attr_list, geom);
-		 if(num>0){
-			 return  ResponseValue.IS_SUCCESS;
+		 String num=productService.saveProduct(cid, title, describe, price, paytype, distype, time, img0, img1, sku_attr_list, other_attr_list, farm_id);
+		return num;
+	}
+	@RequestMapping(value = "/updateProduct", method=RequestMethod.POST)
+	@ResponseBody
+	public String updateProduct(String pro_id,String title,String describe,String price,String paytype,String distype,
+			String time,String submitSKU,String otherattr,String imglist) throws IOException {
+		JSONArray sku_attr_list=JSONArray.parseArray(submitSKU);
+		JSONArray other_attr_list=JSONArray.parseArray(otherattr);
+		JSONArray img=JSONArray.parseArray(imglist);
+		if(sku_attr_list.size()<=0||HmacUtil.getStringNull(submitSKU)||HmacUtil.getStringNull(title)||HmacUtil.getStringNull(describe)
+				||HmacUtil.getStringNull(paytype)||HmacUtil.getStringNull(distype)||HmacUtil.getStringNull(time)){
+			System.out.println("add goods attr is null..");
+		}
+		String cid="0";
+		String num=productService.updateProduct( pro_id,  cid,  title,
+				 describe,  price,  paytype,  distype,
+				 time,  img,  sku_attr_list,
+				 other_attr_list);
+		return num;
+	}
+	
+	@RequestMapping(value = "/queryProduct", method=RequestMethod.POST)
+	@ResponseBody
+	public String queryProduct(String pro_id) throws IOException {
+		
+		if(HmacUtil.getStringNull(pro_id)){
+			System.out.println("add goods attr is null..");
+		}
+		String  str=productService.queryProduct( pro_id);
+		 if(!ResponseValue.IS_ERROR.equals(str)){
+			 return  str;
 		 }
 		return ResponseValue.IS_ERROR;
+	}
+	@RequestMapping(value = "/queryProductByFarm", method=RequestMethod.POST)
+	@ResponseBody
+	public String queryProductByFarm(String farm_id) throws IOException {
+		
+		if(HmacUtil.getStringNull(farm_id)){
+			System.out.println("add goods attr is null..");
+		}
+		String  str=productService.queryProductByFarm( farm_id);
+		 if(!ResponseValue.IS_ERROR.equals(str)){
+			 return  str;
+		 }
+		return ResponseValue.IS_ERROR;
+	}
+	@RequestMapping(value = "/deleteProduct", method=RequestMethod.POST)
+	@ResponseBody
+	public String deleteProduct(String pro_id) throws IOException {
+		
+		if(HmacUtil.getStringNull(pro_id)){
+			System.out.println("add goods attr is null..");
+		}
+		String  str=productService.deleteProduct(pro_id);
+		return str;
 	}
 	
 }

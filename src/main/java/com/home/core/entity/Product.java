@@ -31,6 +31,14 @@ public class Product {
 	private String distributiontype;//配送方式
 	private String describe;//商品详情
 	private String time;//折扣天数
+	private String status;
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public String getId() {
 		return id;
 	}
